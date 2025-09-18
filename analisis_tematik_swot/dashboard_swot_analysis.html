@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Analisis SWOT - KK BRF</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2c3e50;
+            --strength-color: #27ae60;
+            --weakness-color: #e74c3c;
+            --opportunity-color: #3498db;
+            --threat-color: #f39c12;
+            --bg-light: #ecf0f1;
+            --text-dark: #2c3e50;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+            --shadow-hover: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid var(--primary-color);
+        }
+
+        .header h1 {
+            color: var(--primary-color);
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            animation: fadeInDown 0.5s;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.1em;
+            animation: fadeIn 0.8s;
+        }
+
+        .methodology-badge {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1em;
+            font-weight: 500;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .swot-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .swot-quadrant {
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .swot-quadrant:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .swot-quadrant::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+        }
+
+        .strength {
+            background: linear-gradient(135deg, #e8f8f5 0%, #d5f4e6 100%);
+        }
+
+        .strength::before {
+            background: var(--strength-color);
+        }
+
+        .weakness {
+            background: linear-gradient(135deg, #fadbd8 0%, #f5b7b1 100%);
+        }
+
+        .weakness::before {
+            background: var(--weakness-color);
+        }
+
+        .opportunity {
+            background: linear-gradient(135deg, #d6eaf8 0%, #aed6f1 100%);
+        }
+
+        .opportunity::before {
+            background: var(--opportunity-color);
+        }
+
+        .threat {
+            background: linear-gradient(135deg, #fef9e7 0%, #f9e79f 100%);
+        }
+
+        .threat::before {
+            background: var(--threat-color);
+        }
+
+        .quadrant-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .quadrant-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.5em;
+        }
+
+        .strength .quadrant-icon {
+            background: var(--strength-color);
+            color: white;
+        }
+
+        .weakness .quadrant-icon {
+            background: var(--weakness-color);
+            color: white;
+        }
+
+        .opportunity .quadrant-icon {
+            background: var(--opportunity-color);
+            color: white;
+        }
+
+        .threat .quadrant-icon {
+            background: var(--threat-color);
+            color: white;
+        }
+
+        .quadrant-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: var(--text-dark);
+        }
+
+        .quadrant-items {
+            list-style: none;
+        }
+
+        .quadrant-items li {
+            padding: 8px 0;
+            padding-left: 20px;
+            position: relative;
+            color: var(--text-dark);
+            line-height: 1.5;
+        }
+
+        .quadrant-items li:before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        .strength .quadrant-items li:before {
+            color: var(--strength-color);
+        }
+
+        .weakness .quadrant-items li:before {
+            color: var(--weakness-color);
+        }
+
+        .opportunity .quadrant-items li:before {
+            color: var(--opportunity-color);
+        }
+
+        .threat .quadrant-items li:before {
+            color: var(--threat-color);
+        }
+
+        .strategy-section {
+            margin-top: 30px;
+        }
+
+        .strategy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .strategy-card {
+            background: var(--bg-light);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary-color);
+            transition: all 0.3s;
+        }
+
+        .strategy-card:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow);
+        }
+
+        .strategy-card h4 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .strategy-card ul {
+            list-style: none;
+            font-size: 0.95em;
+        }
+
+        .strategy-card li {
+            padding: 5px 0;
+            color: #5d6d7e;
+        }
+
+        .strategy-card li:before {
+            content: '✓ ';
+            color: var(--strength-color);
+            font-weight: bold;
+        }
+
+        .gap-analysis {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .gap-item {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+        }
+
+        .gap-item:hover {
+            transform: translateX(10px);
+        }
+
+        .gap-item h4 {
+            color: var(--threat-color);
+            margin-bottom: 5px;
+        }
+
+        .priority-section {
+            margin-top: 30px;
+        }
+
+        .priority-timeline {
+            position: relative;
+            padding-left: 40px;
+        }
+
+        .priority-timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--primary-color);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+        }
+
+        .timeline-item:hover {
+            transform: translateX(10px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -25px;
+            top: 20px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            border: 3px solid white;
+        }
+
+        .timeline-period {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            margin-bottom: 10px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .metric-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .metric-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .metric-label {
+            color: #7f8c8d;
+            font-size: 0.95em;
+        }
+
+        .risk-matrix {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .risk-level {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .risk-level:hover {
+            transform: translateX(5px);
+        }
+
+        .risk-critical {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+        }
+
+        .risk-high {
+            background: linear-gradient(135deg, #feca57 0%, #ff9ff3 100%);
+            color: var(--text-dark);
+        }
+
+        .risk-medium {
+            background: linear-gradient(135deg, #48dbfb 0%, #0abde3 100%);
+            color: white;
+        }
+
+        .risk-indicator {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+
+        .risk-critical .risk-indicator {
+            color: #ee5a24;
+        }
+
+        .risk-high .risk-indicator {
+            color: #feca57;
+        }
+
+        .risk-medium .risk-indicator {
+            color: #0abde3;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .swot-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Dashboard Analisis SWOT</h1>
+            <p>Analisis Gap Strategis KK BRF - School of Business Management ITB</p>
+            <span class="methodology-badge">Metodologi: Naeem et al. (2023)</span>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn active" onclick="showSection('overview')">Overview</button>
+            <button class="nav-btn" onclick="showSection('swot')">SWOT Matrix</button>
+            <button class="nav-btn" onclick="showSection('gaps')">Gap Analysis</button>
+            <button class="nav-btn" onclick="showSection('strategies')">Strategi</button>
+            <button class="nav-btn" onclick="showSection('priorities')">Prioritas</button>
+            <button class="nav-btn" onclick="showSection('risks')">Mitigasi Risiko</button>
+        </div>
+
+        <!-- Overview Section -->
+        <div id="overview" class="content-section active">
+            <h2 style="color: var(--primary-color); margin-bottom: 20px;">📈 Executive Summary</h2>
+
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-number">26</div>
+                    <div class="metric-label">Total Codes Identified</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-number">6</div>
+                    <div class="metric-label">Critical Gaps</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-number">12</div>
+                    <div class="metric-label">Action Items</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-number">4</div>
+                    <div class="metric-label">Strategic Quadrants</div>
+                </div>
+            </div>
+
+            <div class="gap-analysis">
+                <h3 style="color: var(--text-dark); margin-bottom: 15px;">🎯 Temuan Kunci</h3>
+                <div class="gap-item">
+                    <h4>Status Kritis</h4>
+                    <p>Institusi berada pada titik kritis "Transform or Perish" - transformasi bukan pilihan tetapi keharusan untuk survival.</p>
+                </div>
+                <div class="gap-item">
+                    <h4>Window Peluang Menyempit</h4>
+                    <p>Kompetitor sudah mulai meniru model, sementara internal masih stagnan. Immediate action required.</p>
+                </div>
+                <div class="gap-item">
+                    <h4>Aset Belum Optimal</h4>
+                    <p>Memiliki kekuatan signifikan (praktis, network, brand) namun terhalang masalah sistemik internal.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SWOT Matrix Section -->
+        <div id="swot" class="content-section">
+            <h2 style="color: var(--primary-color); margin-bottom: 20px;">🎯 SWOT Matrix</h2>
+
+            <div class="swot-grid">
+                <div class="swot-quadrant strength">
+                    <div class="quadrant-header">
+                        <div class="quadrant-icon">💪</div>
+                        <h3 class="quadrant-title">Strengths</h3>
+                    </div>
+                    <ul class="quadrant-items">
+                        <li><strong>Orientasi Praktis-Aplikatif:</strong> Diferensiator vs UI/UGM yang teoretis</li>
+                        <li><strong>Brand Positioning Finance:</strong> Visi "go-to place" untuk finance education</li>
+                        <li><strong>Kapasitas Inovasi:</strong> Kemauan menciptakan terobosan pembelajaran</li>
+                        <li><strong>Produktivitas Output:</strong> Riset BRF produktif, podcast paling aktif</li>
+                        <li><strong>Modal Jaringan:</strong> Network industri dan koneksi yang dapat diaktivasi</li>
+                    </ul>
+                </div>
+
+                <div class="swot-quadrant weakness">
+                    <div class="quadrant-header">
+                        <div class="quadrant-icon">⚠️</div>
+                        <h3 class="quadrant-title">Weaknesses</h3>
+                    </div>
+                    <ul class="quadrant-items">
+                        <li><strong>Inkonsistensi Implementasi:</strong> Gap besar antara aspirasi vs eksekusi</li>
+                        <li><strong>Krisis Kualitas Pengajaran:</strong> DTT untuk mata kuliah wajib, dominasi textbook</li>
+                        <li><strong>Beban Kerja Non-Strategis:</strong> "Ngajar, ngajar, ngajar" tanpa waktu berpikir</li>
+                        <li><strong>Defisit Kepemimpinan:</strong> Tidak ada kejelasan arah dan komunikasi</li>
+                        <li><strong>Sistem Insentif Rusak:</strong> Effort-reward mismatch, demotivasi sistemik</li>
+                        <li><strong>Stagnasi Program 20 Tahun:</strong> "Masih kayak dulu", kehilangan edge</li>
+                    </ul>
+                </div>
+
+                <div class="swot-quadrant opportunity">
+                    <div class="quadrant-header">
+                        <div class="quadrant-icon">🚀</div>
+                        <h3 class="quadrant-title">Opportunities</h3>
+                    </div>
+                    <ul class="quadrant-items">
+                        <li><strong>Ekspansi Syariah Inovatif:</strong> Supply chain syariah, blockchain integration</li>
+                        <li><strong>Leadership Literasi Keuangan:</strong> Menjadi pusat excellence nasional</li>
+                        <li><strong>Akses Pendanaan Untapped:</strong> Dana sektor sekuritas tersedia</li>
+                        <li><strong>Kolaborasi Strategis:</strong> Partnership universitas & advisory board</li>
+                        <li><strong>Integrasi Praktisi Senior:</strong> RPL untuk expertise level director/VP</li>
+                        <li><strong>Internasionalisasi:</strong> Faculty exchange untuk global exposure</li>
+                        <li><strong>Modernisasi Infrastruktur:</strong> Trading lab development</li>
+                    </ul>
+                </div>
+
+                <div class="swot-quadrant threat">
+                    <div class="quadrant-header">
+                        <div class="quadrant-icon">🔥</div>
+                        <h3 class="quadrant-title">Threats</h3>
+                    </div>
+                    <ul class="quadrant-items">
+                        <li><strong>Erosi Keunggulan Kompetitif:</strong> Cara sudah dicontoh kompetitor</li>
+                        <li><strong>Penurunan Ranking:</strong> UI/UGM sudah di atas, trajectory menurun</li>
+                        <li><strong>Krisis Identitas:</strong> "Orang susah bedain kita" dengan yang lain</li>
+                        <li><strong>Hambatan Regulasi:</strong> Framework ITB rigid, batasan DTT absurd</li>
+                        <li><strong>Risiko Survival:</strong> "Framework sama, bubar lo" - ancaman eksistensi</li>
+                        <li><strong>Ketidakpastian Transisi:</strong> Leadership vacuum, paralisis keputusan</li>
+                        <li><strong>Risiko Reputasi:</strong> Kontroversi takedown, brand erosion</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gap Analysis Section -->
+        <div id="gaps" class="content-section">
+            <h2 style="color: var(--primary-color); margin-bottom: 20px;">🔍 Gap Analysis Detail</h2>
+
+            <div class="gap-analysis">
+                <h3 style="color: var(--text-dark); margin-bottom: 15px;">Critical Gaps Identified</h3>
+
+                <div class="gap-item">
+                    <h4>Gap Aspirasi-Realitas</h4>
+                    <p>Visi menjadi pusat finance vs realitas program yang stagnan selama 20 tahun. Aspirasi tinggi tanpa eksekusi memadai.</p>
+                </div>
+
+                <div class="gap-item">
+                    <h4>Gap Kualitas</h4>
+                    <p>Standar excellence yang diinginkan vs kompromi dengan DTT untuk mata kuliah wajib. Mahasiswa "tega-teganya" diserahkan ke kualitas suboptimal.</p>
+                </div>
+
+                <div class="gap-item">
+                    <h4>Gap Kepemimpinan</h4>
+                    <p>Kebutuhan arah jelas vs kevakuman leadership. "Sampai sekarang belum jelas" apa yang boleh dan tidak boleh.</p>
+                </div>
+
+                <div class="gap-item">
+                    <h4>Gap Inovasi</h4>
+                    <p>Kebutuhan diferensiasi vs stagnasi. "Masih kayak S-Batini" setelah hampir 20 tahun.</p>
+                </div>
+
+                <div class="gap-item">
+                    <h4>Gap Insentif</h4>
+                    <p>Effort yang diharapkan vs reward yang diterima. Staff "sering healing" sebagai pelarian dari frustasi.</p>
+                </div>
+
+                <div class="gap-item">
+                    <h4>Gap Identitas</h4>
+                    <p>Positioning unik vs konvergensi dengan kompetitor. "Orang susah bedain kita" dengan universitas lain.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Strategies Section -->
+        <div id="strategies" class="content-section">
+            <h2 style="color: var(--primary-color); margin-bottom: 20px;">⚡ Strategi Kuadran</h2>
+
+            <div class="strategy-section">
+                <div class="strategy-grid">
+                    <div class="strategy-card">
+                        <h4>SO Strategies</h4>
+                        <p style="color: #7f8c8d; font-size: 0.9em; margin-bottom: 10px;">Leverage Strengths untuk Capture Opportunities</p>
+                        <ul>
+                            <li>Gunakan orientasi praktis untuk memimpin literasi keuangan</li>
+                            <li>Leverage brand finance untuk ekspansi syariah inovatif</li>
+                            <li>Aktivasi network untuk akses pendanaan sekuritas</li>
+                            <li>Manfaatkan inovasi untuk modernisasi infrastruktur</li>
+                        </ul>
+                    </div>
+
+                    <div class="strategy-card">
+                        <h4>WO Strategies</h4>
+                        <p style="color: #7f8c8d; font-size: 0.9em; margin-bottom: 10px;">Overcome Weaknesses dengan Opportunities</p>
+                        <ul>
+                            <li>Atasi krisis kualitas via integrasi praktisi RPL</li>
+                            <li>Perbaiki sistem insentif dengan dana sekuritas</li>
+                            <li>Break stagnasi via kolaborasi & internasionalisasi</li>
+                            <li>Address defisit leadership dengan advisory board</li>
+                        </ul>
+                    </div>
+
+                    <div class="strategy-card">
+                        <h4>ST Strategies</h4>
+                        <p style="color: #7f8c8d; font-size: 0.9em; margin-bottom: 10px;">Use Strengths untuk Mitigate Threats</p>
+                        <ul>
+                            <li>Perkuat diferensiasi praktis counter erosi kompetitif</li>
+                            <li>Leverage produktivitas untuk maintain ranking</li>
+                            <li>Gunakan network untuk navigate regulasi</li>
+                            <li>Inovasi kontinyu untuk avoid krisis identitas</li>
+                        </ul>
+                    </div>
+
+                    <div class="strategy-card">
+                        <h4>WT Strategies</h4>
+                        <p style="color: #7f8c8d; font-size: 0.9em; margin-bottom: 10px;">Minimize Weaknesses dan Avoid Threats</p>
+                        <ul>
+                            <li>Reformasi urgent sistem insentif prevent exodus</li>
+                            <li>Klarifikasi leadership untuk navigate transisi</li>
+                            <li>Perbaiki komunikasi untuk manage risiko reputasi</li>
+                            <li>Transform program untuk ensure survival</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Priorities Section -->
+        <div id="priorities" class="content-section">
+            <h2 style="color: var(--primary-color); margin-bottom: 20px;">📅 Prioritas Action</h2>
+
+            <div class="priority-section">
+                <div class="priority-timeline">
+                    <div class="timeline-item">
+                        <span class="timeline-period">IMMEDIATE (0-3 Bulan)</span>
+                        <h4>Fase Krisis Response</h4>
+                        <ul style="margin-top: 10px; list-style: none;">
+                            <li>• Leadership Clarity Session - Definisikan arah jelas</li>
+                            <li>• Incentive System Reform - Match effort dengan reward</li>
+                            <li>• Quality Crisis Response - Audit sistem DTT</li>
+                        </ul>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="timeline-period">SHORT-TERM (3-6 Bulan)</span>
+                        <h4>Fase Stabilisasi</h4>
+                        <ul style="margin-top: 10px; list-style: none;">
+                            <li>• Program Revitalization - Launch diferensiasi baru</li>
+                            <li>• Praktisi Integration via RPL - Quick quality upgrade</li>
+                            <li>• Financial Literacy Initiative - First-mover advantage</li>
+                        </ul>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="timeline-period">MEDIUM-TERM (6-12 Bulan)</span>
+                        <h4>Fase Pengembangan</h4>
+                        <ul style="margin-top: 10px; list-style: none;">
+                            <li>• Syariah Program Development dengan white paper</li>
+                            <li>• Infrastructure Modernization - Trading lab</li>
+                            <li>• International Partnership - Faculty exchange</li>
+                        </ul>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="timeline-period">LONG-TERM (12+ Bulan)</span>
+                        <h4>Fase Transformasi</h4>
+                        <ul style="margin-top: 10px; list-style: none;">
+                            <li>• Complete Transformation ke national leader</li>
+                            <li>• Sustainable Excellence Model</li>
+                            <li>• Legacy Building - Future-proof institution</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Risk Mitigation Section -->
+        <div id="risks" class="content-section">
+            <h2 style="color: var(--primary-color); margin-bottom: 20px;">🛡️ Mitigasi Risiko</h2>
+
+            <div class="risk-matrix">
+                <div class="risk-level risk-critical">
+                    <div class="risk-indicator">!</div>
+                    <div>
+                        <h4>CRITICAL: Survival Threat</h4>
+                        <p>Transform or perish mindset. Window untuk action sangat terbatas.</p>
+                    </div>
+                </div>
+
+                <div class="risk-level risk-high">
+                    <div class="risk-indicator">⚠</div>
+                    <div>
+                        <h4>HIGH: Talent Exodus</h4>
+                        <p>Immediate incentive fix diperlukan untuk retain talent kunci.</p>
+                    </div>
+                </div>
+
+                <div class="risk-level risk-high">
+                    <div class="risk-indicator">⚠</div>
+                    <div>
+                        <h4>HIGH: Identity Loss</h4>
+                        <p>Strengthen differentiation untuk maintain unique positioning.</p>
+                    </div>
+                </div>
+
+                <div class="risk-level risk-medium">
+                    <div class="risk-indicator">○</div>
+                    <div>
+                        <h4>MEDIUM: Reputation Damage</h4>
+                        <p>Proactive communication strategy untuk manage persepsi publik.</p>
+                    </div>
+                </div>
+
+                <div class="risk-level risk-medium">
+                    <div class="risk-indicator">○</div>
+                    <div>
+                        <h4>MEDIUM: Ranking Decline</h4>
+                        <p>Quality improvement focus dengan quick wins visibility.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: var(--bg-light); padding: 20px; border-radius: 15px; margin-top: 20px;">
+                <h3 style="color: var(--primary-color); margin-bottom: 15px;">🎯 Critical Success Factors</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div style="padding: 10px;">
+                        <strong>Leadership Commitment</strong>
+                        <p style="color: #7f8c8d; font-size: 0.9em;">Konsistensi dan clarity dari top</p>
+                    </div>
+                    <div style="padding: 10px;">
+                        <strong>Resource Mobilization</strong>
+                        <p style="color: #7f8c8d; font-size: 0.9em;">Akses dan alokasi optimal</p>
+                    </div>
+                    <div style="padding: 10px;">
+                        <strong>Execution Discipline</strong>
+                        <p style="color: #7f8c8d; font-size: 0.9em;">Dari aspirasi ke realitas</p>
+                    </div>
+                    <div style="padding: 10px;">
+                        <strong>Stakeholder Alignment</strong>
+                        <p style="color: #7f8c8d; font-size: 0.9em;">Satu visi, satu arah</p>
+                    </div>
+                    <div style="padding: 10px;">
+                        <strong>Innovation Momentum</strong>
+                        <p style="color: #7f8c8d; font-size: 0.9em;">Continuous improvement</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+
+            // Update navigation buttons
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(button => {
+                button.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // Add smooth scroll to top when changing sections
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+
+            document.getElementById(sectionId).classList.add('active');
+
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(button => {
+                button.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Smooth scroll to top
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -10% 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeIn 0.5s forwards';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all cards and items
+        document.addEventListener('DOMContentLoaded', () => {
+            const elements = document.querySelectorAll('.metric-card, .gap-item, .strategy-card, .timeline-item, .risk-level');
+            elements.forEach(el => observer.observe(el));
+        });
+    </script>
+</body>
+</html>

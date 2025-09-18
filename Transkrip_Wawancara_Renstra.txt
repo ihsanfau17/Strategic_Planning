@@ -1,0 +1,35 @@
+TRANSKRIP WAWANCARA RENSTRA DENGAN KETUA KK BRF
+=====================================================
+
+[CATATAN: File audio M4A telah ditemukan tetapi memerlukan tool transcription yang lebih lengkap]
+
+File Audio: Wawancara Renstra dg Ketua KK BRF.m4a
+Ukuran: 18 MB
+Format: M4A (MPEG-4 Audio)
+
+OPSI UNTUK MENTRANSKRIP:
+-------------------------
+1. Menggunakan Google Colab dengan Whisper AI:
+   - Upload file ke Google Drive
+   - Buka Google Colab
+   - Install dan jalankan OpenAI Whisper
+
+2. Menggunakan layanan online gratis:
+   - Otter.ai (https://otter.ai)
+   - Sonix.ai (trial gratis)
+   - AssemblyAI (API gratis terbatas)
+
+3. Menggunakan tool lokal (perlu instalasi):
+   - OpenAI Whisper
+   - SpeechRecognition Python library
+
+4. Manual transcription menggunakan media player dengan fitur slow playback
+
+INFORMASI FILE:
+---------------
+Durasi audio dapat dilihat dengan menjalankan:
+ffprobe "Wawancara Renstra dg Ketua KK BRF.m4a"
+
+Untuk konversi ke format lain, gunakan:
+ffmpeg -i "Wawancara Renstra dg Ketua KK BRF.m4a" output.wav
+
