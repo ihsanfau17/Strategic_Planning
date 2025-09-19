@@ -26,36 +26,6 @@ Transcriptor adalah toolkit komprehensif untuk mentranskrip audio wawancara dan 
 - MongoDB untuk data storage
 - Setup otomatis dengan script
 
-## 📁 Struktur Folder
-
-```
-transcriptor/
-├── 📄 Core Scripts
-│   ├── transcribe_audio.py           # Script Python untuk transkripsi lokal
-│   ├── google_colab_transcribe.py    # Script untuk Google Colab dengan Whisper
-│   ├── local_transcribe.sh           # Bash script dengan berbagai opsi transkripsi
-│   └── thematic_prompt.md            # Prompt untuk analisis tematik SWOT
-│
-├── 📊 Analisis & Output
-│   ├── analisis_tematik_swot/
-│   │   └── dashboard_swot_analysis.html  # Dashboard visualisasi SWOT
-│   ├── Result_Transkrip_Wawancara_Renstra.txt  # Hasil transkripsi lengkap
-│   └── Transkrip_Wawancara_Renstra.txt         # Transkrip singkat
-│
-├── 🎵 Sample Data
-│   └── Wawancara Renstra dg Ketua KK BRF.m4a  # File audio sample (18MB)
-│
-├── 🐳 Docker Configuration
-│   ├── docker-compose.yml            # Konfigurasi Docker services
-│   ├── get-whishper.sh              # Script instalasi Whishper
-│   ├── .env                          # Environment variables
-│   └── whishper_data/               # Data directory untuk Whishper
-│
-└── 🐍 Python Environment
-    └── transcription_env/            # Virtual environment Python
-
-```
-
 ## 🚀 Quick Start
 
 ### Opsi 1: Google Colab (Recommended untuk pemula)
